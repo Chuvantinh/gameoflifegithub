@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.cpp
+GameOfLife.h
+/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.h
+iostream
+-
+omp.h
+-
+math.h
+-
+
+/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.h
+cstdlib
+-
+ctime
+-
+
+/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife_Test.cpp
+GameOfLife.h
+/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.h
+GameOfLife.cpp
+/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.cpp
+gtest/gtest.h
+-
+

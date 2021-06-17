@@ -13,11 +13,14 @@ private:
     
 	int width;
 	int height;
-    int countNeighbors(const int, const int);
 public:
     GameOfLife(const int w, const int h);
 	~GameOfLife();
 	void randomInit(const double probability = 0.1);
 	void iterate();
-    bool organismAt(const int x, const int y);
+    bool getElement(const int x, const int y);
+    bool setElement(int x, int y, bool value);
+    int countNeighbors(const int, const int);
+    void printGrid();
+    double squareRoot(const double a);
 };

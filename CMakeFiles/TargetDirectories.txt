@@ -1,0 +1,3 @@
+/home/adminpc/Dokumente/projects/game-of-life/CMakeFiles/rebuild_cache.dir
+/home/adminpc/Dokumente/projects/game-of-life/CMakeFiles/edit_cache.dir
+/home/adminpc/Dokumente/projects/game-of-life/CMakeFiles/executeTests.dir
