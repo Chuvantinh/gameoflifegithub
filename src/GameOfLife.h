@@ -20,7 +20,8 @@ public:
 	void iterate();
     bool getElement(const int x, const int y);
     bool setElement(int x, int y, bool value);
-    int countNeighbors(const int, const int);
+    int countNeighbors( int x,  int y);
+    
     void printGrid();
     double squareRoot(const double a);
 };

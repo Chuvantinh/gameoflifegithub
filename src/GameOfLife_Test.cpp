@@ -35,9 +35,9 @@ TEST(CountNeighBoursTest, CountNear){
     game->setElement(2,1, false);
     game->setElement(2,2, true);
 
-    bool countElement = game->countNeighbors(1,1);
-    printf("countElement: %i", countElement);
-    ASSERT_EQ(4.0, countElement);
+    double countElement = game->countNeighbors(1,1);
+    // printf("countElement: %i", countElement);
+    ASSERT_EQ(3.0, countElement);
 }
 
 TEST(GetStatusElement, NoNeighbours)
