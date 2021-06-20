@@ -1,0 +1,14 @@
+\hypertarget{md_README_autotoc_md1}{}\doxysection{Rules}\label{md_README_autotoc_md1}
+
+\begin{DoxyItemize}
+\item an organism with 0, 1, 4, 5, 6, 7 or 8 neighbors dies
+\item an organism with 2 or 3 neighbors survives
+\item organisms are born in empty cells with 3 neighbors
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md2}{}\doxysection{Configuration File}\label{md_README_autotoc_md2}
+Some game variables can be changed using a configuration file like {\ttfamily game.\+config} (configuration file reading is powered by Richard J. Wagner\textquotesingle{}s \href{http://ai.stanford.edu/~gal/Code/FindMotifs/ConfigFile.h}{\texttt{ Config\+File}}). The configuration file is passed as an argument to the executable\+:
+
+{\ttfamily ./game game.\+config}
+
+The example configuration lists all the possible configurations each accompanied by a small explanation.\hypertarget{md_README_autotoc_md3}{}\doxysection{Compilation}\label{md_README_autotoc_md3}
+The included makefile can be used to compile the code. To compile and run the code type {\ttfamily make} in your terminal. \`{}make compile will compile the code but not run it. \hypertarget{md_README_autotoc_md4}{}\doxysection{doxygen}\label{md_README_autotoc_md4}
+doxygen -\/g dconfig create file config doxygen dconfig run in the project 

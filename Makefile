@@ -177,7 +177,7 @@ cmake_check_build_system:
 .PHONY : cmake_check_build_system
 
 mp:
-	gcc config/ConfigFile.cpp src/main.cpp src/GameOfLife.cpp -g -o src/game -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
+	gcc src/main.cpp src/GameOfLife.cpp -g -o src/game -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
 dmp:
 	valgrind --tool=helgrind src/game
 cl:

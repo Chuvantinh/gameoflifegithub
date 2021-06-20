@@ -1,3 +1,7 @@
+/*!
+ *  A main class only for game of life with openMP
+ */
+
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
 #  include <OpenGL/glu.h>
@@ -9,18 +13,26 @@
 #endif
 
 #include "GameOfLife.h"
-#include "../config/ConfigFile.h"
+// #include "../config/ConfigFile.h"
+#include <fstream>
+#include <algorithm>
 
 #include <iostream>
 
-
+//! A define variable.
+/*!
+    Define colors of the game
+	white for backroun
+	black for the display of element.
+*/
 #define WHITE 1.0, 1.0, 1.0
 #define BLACK 0.0, 0.0, 0.0
 
-// values are read from "game.config"
+//! Default will be declared here but after reading 
+//! values are read from "config/game.txt"
 GLint FPS = 24;
-GLint window_width = 512;
-GLint window_height = 512;
+GLint window_width = 900;
+GLint window_height = 600;
 GLfloat left = 0.0;
 GLfloat right = 1.0;
 GLfloat bottom = 0.0;
@@ -29,10 +41,24 @@ GLint game_width = 100;
 GLint game_height = 100;
 int count = 0;
 double zoom = 1.0;
+int OMP_NUM_THREADS;//! NUMBER OF THREADS FOR OPENMP
 
-GameOfLife *game;
+GameOfLife *game; //! Object of game and can use for all methode
 
-// http://math.hws.edu/graphicsbook/c3/s1.html#:~:text=The%20function%20glVertex2f%20specifies%20the,are%20passed%20to%20the%20function.
+//! http://math.hws.edu/graphicsbook/c3/s1.html#:~:text=The%20function%20glVertex2f%20specifies%20the,are%20passed%20to%20the%20function.
+//! A callback function
+/**!
+ * glutDisplayFunc sets the display callback for the current window.
+ * glutDisplayFunc sets the display callback for the current window. 
+ * When GLUT determines that the normal plane for the window needs to be redisplayed, 
+ * the display callback for the window is called. Before the callback, 
+ * the current window is set to the window needing to be redisplayed and 
+ * (if no overlay display callback is registered) the layer in use is set to the normal plane. 
+ * The display callback is called with no parameters.
+ * The entire normal plane region should be redisplayed in response to the callback (this includes ancillary buffers if your program depends on their state).
+ * @paramerter : int width
+ * @paramterte int height
+ */
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
@@ -44,7 +70,8 @@ void display() {
 	for (GLint x = 0; x < game_width; ++x) {
 		for (GLint y = 0; y < game_height; ++y) {
             game->getElement(x, y)?glColor3f(BLACK):glColor3f(WHITE); // draw color for quads 
-            /**
+            /**!
+			 * Just print element to see 
 			// if(y == 1 or y == 99){
 			// 	std::cout << " 1: " << x*xSize+left << "," << y*ySize+bottom  << std::endl; 
 			// 	std::cout << " 2: " << (x+1)*xSize+left << ", " << y*ySize+bottom <<std::endl; 
@@ -73,7 +100,7 @@ void display() {
 	}
 	glEnd();
 
-	// write line vertical
+	//! write line vertical
 	glBegin(GL_LINES);
 		glColor3ub(180,170,168);
 		for (GLint x = 0; x < game_width; ++x) {
@@ -86,7 +113,7 @@ void display() {
 		}
 	glEnd();
 
-	// write line horizon
+	//! write line horizon
 	glBegin(GL_LINES);
 		glColor3ub(180,170,168);
 		for (GLint x = 0; x < game_width; ++x) {
@@ -103,6 +130,13 @@ void display() {
 	glutSwapBuffers();
 }
 
+//! A callback function
+/**!
+ * glutReshapeFunc sets the reshape callback for the current window.
+ * @paramerter : int width
+ * @paramterte int height
+ * @return void
+*/
 void reshape(int w, int h) {
 	window_width = w;
 	window_height = h;
@@ -119,6 +153,13 @@ void reshape(int w, int h) {
 	glutPostRedisplay();
 }
 
+//! A callback function
+/**!
+ * glutTimerFunc callbackfunction and afer time
+ * glutPostRedisplay marks the current window as needing to be redisplayed.
+ * @paramerter : int value 
+ * @return void
+*/
 void update(int value) {
 	//count = count + 1;
 	//std::cout << " vong lap: " << count <<std::endl; 
@@ -128,43 +169,12 @@ void update(int value) {
 	glutTimerFunc(1000 / FPS, update, 0);
 }
 
-void readConfiguration(char* file) {
-	ConfigFile config(file);
-	
-	config.readInto(FPS, "fps" );
-	
-	config.readInto(window_width, "window_width");
-	config.readInto(window_height, "window_height");
-	
-	config.readInto(left, "left" );
-	config.readInto(right, "right" );
-	config.readInto(bottom, "bottom" );
-	config.readInto(top, "top" );
-	
-	config.readInto(game_width, "game_width" );
-	config.readInto(game_height, "game_height" );
-}
-
-bool checkConfiguration() {
-	if (left > right) {
-		std::cout << "Ortographic projection values error: 'left' must be less than 'right'" << std::endl;
-		return false;
-	}
-	if (bottom > top) {
-		std::cout << "Ortographic projection values error: 'bottom' must be less than 'top'" << std::endl;
-		return false;
-	}
-	if (window_width <= 0 || window_height <= 0 || game_width <= 0 || game_height <= 0) {
-		std::cout << "The window's and game's 'width' and 'height' must be greater than 0" << std::endl;
-		return false;
-	}
-	if (game_width >= window_width || game_height >= window_height) {
-		std::cout << "Try reducing the game dimensions or increasing the window size for a better visualization" << std::endl;
-	}
-	
-	return true;
-}
-
+//! A callback function
+/**!
+ * Event crt and scroll up or ow to see more detail of the element on the grid
+ * @paramerter : int button, int state, int x, int y 
+ * @return void
+*/
 void mouse(int button, int state, int x, int y)
 {
     // Wheel reports as button 3(scroll up) and button 4(scroll down)
@@ -202,21 +212,63 @@ void mouse(int button, int state, int x, int y)
         //printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
     }
 }
+//! A function Getconfig
+/**!
+	* get config file from txt file
+	* instruction from: https://www.walletfox.com/course/parseconfigfile.php
+	* stoi() convert string to int
+*/
+void getConfigFile(){
+		 // std::ifstream is RAII, i.e. no need to call close
+    std::ifstream cFile ("config/game.txt");
+    if (cFile.is_open())
+    {
+        std::string line;
+        while(getline(cFile, line)){
+            line.erase(std::remove_if(line.begin(), line.end(), isspace),
+                                 line.end());
+            if(line[0] == '#' || line.empty())
+                continue;
+            auto delimiterPos = line.find("=");
+            auto name = line.substr(0, delimiterPos);
+            auto value = line.substr(delimiterPos + 1);
+            // std::cout << name << "=" << value << '\n';
+			if(name=="fps"){FPS = stoi(value);}
+			if(name=="windowWidth"){window_width = stoi(value);}
+			if(name=="windowHeight"){window_height = stoi(value);}
 
+			if(name=="left"){left = stoi(value);}
+			if(name == "right"){right = stoi(value);}
+			if(name == "bottom"){bottom = stoi(value);}
+			if(name == "top"){top = stoi(value);}
+
+			if(name == "gameWidth"){game_width = stoi(value);}
+			if(name == "gameHeight"){ game_height = stoi(value);}
+			if(name == "OMP_NUM_THREADS"){ OMP_NUM_THREADS = stoi(value);}
+        }
+        
+    }
+    else {
+        std::cerr << "Couldn't open config file for reading.\n";
+    }
+}
+//! A main function only for openMP
+/**!
+ * work follow: getconfig
+ * init object
+ * show gird 
+ * update grid
+ * glutmainloop to wait funcion
+ * finish
+*/
 int main(int argc, char **argv) {
+	getConfigFile();
 	game = new GameOfLife(game_width, game_height);
 	game->randomInit();
 
 	// game->printGrid();
   	glutInit(&argc, argv);
-	
-	if (argc > 1) {
-		readConfiguration(argv[1]);
-	}
-	
-	if (!checkConfiguration()) {
-		return 0;
-	}
+
      
 	glutInitWindowSize(window_width, window_height);
 	glutInitWindowPosition(0, 0);
