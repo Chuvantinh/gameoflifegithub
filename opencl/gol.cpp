@@ -1,4 +1,10 @@
-// https://github.com/mbdriscoll/examples/blob/master/clgl_interop/example.c example with glCreateFromOpenGLBuffer 
+//!  A opencl class. 
+/*!
+    A test class for game of life 
+    how to install : https://www.srcmake.com/home/google-cpp-test-framework
+    document at https://google.github.io/googletest/
+    reference: https://github.com/mbdriscoll/examples/blob/master/clgl_interop/example.c example with glCreateFromOpenGLBuffer 
+*/
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -17,13 +23,13 @@ int sample_rate = 100000;
 
 /* gl variables */
 GLfloat angle = 0.0f;
-int refresh_mills = 1000.0/30.0; // refresh interval in milliseconds
+int refresh_mills = 1000.0/30.0; //! refresh interval in milliseconds
 bool full_screen_mode = false;
 char title[] = "Game of Life on OpenCL (faster than openMP)";  // Windowed mode's title
-int window_width  = 512;     // Windowed mode's width
-int window_height = 512;     // Windowed mode's height
-int window_pos_x   = 50;      // Windowed mode's top-left corner x
-int window_pos_y   = 50;      // Windowed mode's top-left corner y
+int window_width  = 512;     //! Windowed mode's width
+int window_height = 512;     //! Windowed mode's height
+int window_pos_x   = 50;      //! Windowed mode's top-left corner x
+int window_pos_y   = 50;      //! Windowed mode's top-left corner y
 double zoom = 1.0;
 double ortho_left = -1.0;
 double ortho_right = 1.0;
@@ -32,16 +38,31 @@ double ortho_bottom = -1.0;
 clock_t wall_clock = 0;
 
 GLuint frame_buffer_name = 0;
-GLuint rendered_texture, rendered_texture_out;
+GLuint rendered_texture, rendered_texture_out; //! binding rendered_texture to image in opencl , for the display 
 
 /* gl functions*/
+//! Init function
 void initGL(int argc, char *argv[]);
+
+//! run 2 call back function one for display , one for copy output to opengl, reshape function
 void startGL();
+
+//! glutPostRedisplay containts in this function
 void displayTimer(int value);
+
+//! glutPostRedisplay containts in this function
 void generationTimer(int value);
+
+//! glutPostRedisplay containts in this function
 void display();
+
+//! mouse scroll up and down to view
 void mouse(int button, int state, int x, int y);
+
+//! specialKeys with keyboar
 void specialKeys(int key, int x, int y);
+
+//! reshape view
 void reshape(GLsizei width, GLsizei height);
 
 /* cl kernel */
@@ -86,7 +107,7 @@ int gol_map_width = 512;
 int gol_map_height = 512;
 long long int gol_generation = 0;
 
-/* game functions */
+/**! game functions, generate gird with 2 for loop */
 void golMapRandFill();
 
 // void golMapClear();
@@ -115,14 +136,14 @@ int main(int argc, char *argv[])
     printf("global_work_size[1]=%lu, local_work_size[1]=%lu, elements_size[1]=%lu, work_groups_y=%lu\n",
             global_work_size[1], local_work_size[1], elements_size[1], global_work_size[1] / local_work_size[1]);
 
-    /* allocate host memory */
+    /**! allocate host memory */
     gol_map      = (char *)malloc(sizeof(cl_char) * global_work_size[0] * global_work_size[1]);
     gol_tmap     = (char *)malloc(sizeof(cl_char) * global_work_size[0] * global_work_size[1]);
     /* end allocate host memory */
 
-    /* init gol_map */
+    /**! init gol_map */
     golMapRandFill();
-    /* end init gol_map */
+    /**! end init gol_map */
 
     err = clGetPlatformIDs(1, &platform, NULL);
     die(err, "clGetPlatformIds");
@@ -154,13 +175,13 @@ int main(int argc, char *argv[])
     command_quque = clCreateCommandQueue(context, device, 0, &err);
     die(err, "clCreateCommandQueue");
 
-    /* create buffers */
+    /**! create buffers */
     // https://software.intel.com/content/www/us/en/develop/articles/opencl-and-opengl-interoperability-tutorial.html?fbclid=IwAR2oqBm5aDz-owEuqlG-GOSMv04-Dkp1sYSzEt3PZkFTSj6paL9BERnE3Ik
     // OpenGL texture (or render-buffer) becomes an OpenCL image (via clCreateFromGLTexture).
     // 	clCreateFromGLTexture2D: Creates an OpenCL image object from the OpenGL texture object , CL_MEM_WRITE_ONLY for faster discarding data
     dev_gol_image = clCreateFromGLTexture2D(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, rendered_texture, &err);
     
-    // cai nay loi dev_gol_image = clCreateFromGLBuffer(context, CL_MEM_WRITE_ONLY, rendered_texture, &err);
+    /// cai nay loi dev_gol_image = clCreateFromGLBuffer(context, CL_MEM_WRITE_ONLY, rendered_texture, &err);
         die(err, "clCreateBuffer dev_gol_image");
 
     dev_gol_map_in = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(cl_char) * global_work_size[0] * global_work_size[1] , NULL, &err);
@@ -222,6 +243,9 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/**!
+ * print error if error
+*/
 void die(cl_int err, const char* str)
 {
     if(err != CL_SUCCESS)
@@ -232,6 +256,10 @@ void die(cl_int err, const char* str)
     }
 }
 
+//!  A function . 
+/*!
+    * free variable after finish
+*/
 void clean()
 {
     if(source_string) free(source_string);
@@ -248,6 +276,10 @@ void clean()
     free(gol_tmap);
 }
 
+//!  A Load function . 
+/*!
+    * Load file kern for opencl
+*/
 int loadProgramSource(const char *filename, char **p_source_string, size_t *length)
 {
     FILE *file;
@@ -278,6 +310,10 @@ int loadProgramSource(const char *filename, char **p_source_string, size_t *leng
     return 0;
 }
 
+//!  A init function . 
+/*!
+    * init OpenGL with glBindTexture and variable : rendered_texture
+*/
 void initGL(int argc, char *argv[])
 {
     glutInit(&argc, argv);
@@ -308,6 +344,10 @@ void initGL(int argc, char *argv[])
     glFinish();
 }
 
+//!  A init function . 
+/*!
+    * startGL caculate after init
+*/
 void startGL()
 {
     glutTimerFunc(0, displayTimer, 0);
@@ -315,12 +355,20 @@ void startGL()
     glutMainLoop();
 }
 
+//!  A init function . 
+/*!
+    * call backfunction  glutPostRedisplay
+*/
 void displayTimer(int value)
 {
     glutPostRedisplay();
     glutTimerFunc(refresh_mills, displayTimer, 0);
 }
 
+//!  A function . 
+/*!
+    * call backfunction  generationTimer and realease : dev_gol_image
+*/
 void generationTimer(int value)
 {
     err = clEnqueueAcquireGLObjects(command_quque, 1, &dev_gol_image, 0, 0, 0);
@@ -342,7 +390,7 @@ void generationTimer(int value)
     err = clEnqueueReleaseGLObjects(command_quque, 1,  &dev_gol_image, 0, 0, NULL);
     die(err, "clEnqueueReleaseGLObjects");
     //memcpy(gol_map, gol_tmap, sizeof(cl_char) * global_work_size[0] * global_work_size[1]);
-    std::cout << &dev_gol_image;
+    // std::cout << &dev_gol_image;
 
     gol_generation++;
 
@@ -357,7 +405,10 @@ void generationTimer(int value)
     glutTimerFunc(0, generationTimer, 0);
 }
 
-// http://www.cs.cornell.edu/courses/cs4620/2011fa/lectures/practicum05.pdf
+//!  A function . 
+/*!
+    * call backfunction  generationTimer and realease : dev_gol_image
+*/
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -387,6 +438,10 @@ void display()
     glutSwapBuffers();
 }
 
+//!  A function
+/*!
+    * mouse click
+*/
 void mouse(int button, int state, int x, int y)
 {
     // Wheel reports as button 3(scroll up) and button 4(scroll down)
@@ -425,6 +480,10 @@ void mouse(int button, int state, int x, int y)
     }
 }
 
+//!  A function
+/*!
+    * mouse specialKeys
+*/
 void specialKeys(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_F1:    // F1: Toggle between full-screen and windowed mode
@@ -452,6 +511,10 @@ void specialKeys(int key, int x, int y) {
     }
 }
 
+//!  A function
+/*!
+    * reshape function in opengl
+*/
 void reshape(GLsizei width, GLsizei height)
 {
     // Compute aspect ratio of the new window
@@ -504,7 +567,10 @@ void reshape(GLsizei width, GLsizei height)
 //     memcpy(gol_map, gol_tmap, gol_map_width*gol_map_height*sizeof(char));
 // }
 
-// using randome to create te grid in the game of life
+//!  A function
+/*!
+    * using randome to create te grid in the game of life
+*/
 void golMapRandFill()
 {
     unsigned seed = time(0);

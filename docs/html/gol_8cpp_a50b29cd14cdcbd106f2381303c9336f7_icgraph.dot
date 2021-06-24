@@ -1,0 +1,16 @@
+digraph "die"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="die",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="generationTimer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$gol_8cpp.html#ab4a5552a618c2bb1423e5a3a1180ddc8",tooltip="glutPostRedisplay containts in this function"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="startGL",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$gol_8cpp.html#a798a81a624eb880fcfef11c59906c0d0",tooltip="run 2 call back function one for display , one for copy output to opengl, reshape function"];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="main",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$gol_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

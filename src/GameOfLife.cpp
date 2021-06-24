@@ -75,19 +75,23 @@ void GameOfLife::iterate()
 {
 	// std::cout << "w in iterate " << width ;
 
-	bool **temporary = new bool *[width];
+	// bool **temporary = new bool *[width];
 
-	for (size_t i = 0; i < width; ++i)
-	{
-		temporary[i] = new bool[height];
-	}
+	// for (size_t i = 0; i < width; ++i)
+	// {
+	// 	temporary[i] = new bool[height];
+	// }
 
 	// omp_set_num_threads(16);
 	// int nProcessors = omp_get_max_threads();
 	// std::cout << "nProcessors. " << nProcessors ;
 	// printf("nProcessors: %d\n",nProcessors);
-
-#pragma omp parallel for
+// schedule(static) ordered
+// #pragma omp for collapse(2)
+omp_set_nested(true); //Enables nesting.
+#pragma omp parallel
+{
+	#pragma omp for collapse(2)
 	for (size_t i = 0; i < width; ++i)
 	{
 		for (size_t j = 0; j < height; ++j)
@@ -95,23 +99,22 @@ void GameOfLife::iterate()
 			// Edges
 			if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
 			{
-				// grid[i][j] = grid[i][j];
+				tempGrid[i][j] = grid[i][j];
 			}
 			else
 			{
 				int neighbors = countNeighbors(i, j);
-				//#pragma omp critical
 				if (grid[i][j] == true)
 				{
 					if (neighbors == 2 || neighbors == 3)
 					{
 						// element survives
-						temporary[i][j] = 1;
+						tempGrid[i][j] = 1;
 					}
 					else
 					{
 						// element dies
-						temporary[i][j] = 0;
+						tempGrid[i][j] = 0;
 					}
 				}
 				else
@@ -119,27 +122,28 @@ void GameOfLife::iterate()
 					if (neighbors == 3)
 					{
 						// element is born
-						temporary[i][j] = 1;
+						tempGrid[i][j] = 1;
 					}
 					else
 					{
 						// element empty
-						temporary[i][j] = 0;
+						tempGrid[i][j] = 0;
 					}
 				}
 			}
 		}
 	}
+}
 
 	bool **t = grid;
-	grid = temporary;
-	temporary = t;
+	grid = tempGrid;
+	tempGrid = t;
 
-	// free temporary
-	for (size_t i = 0; i < width; ++i)
-	{
-		delete[] temporary[i];
-	}
+	// // free temporary
+	// for (size_t i = 0; i < width; ++i)
+	// {
+	// 	delete[] temporary[i];
+	// }
 }
 
 //! A function variable

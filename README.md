@@ -17,5 +17,6 @@ The example configuration lists all the possible configurations each accompanied
 
 The included makefile can be used to compile the code. To compile and run the code type `make` in your terminal. `make compile will compile the code but not run it.
 ## doxygen
+file config: https://gist.githubusercontent.com/ugovaretto/261bd1d16d9a0d2e76ee/raw/63acd4081fdcfebf091f4110d91f91d40cf4f782/Doxyfile
 doxygen -g dconfig create file config
 doxygen dconfig run in the project

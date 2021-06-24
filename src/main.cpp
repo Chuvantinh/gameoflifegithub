@@ -1,5 +1,6 @@
-/*!
- *  A main class only for game of life with openMP
+/** \mainpage OpenMP main page
+ * @brief A main class only for game of life with openMP
+ * @return void
  */
 
 #ifdef __APPLE__
@@ -47,7 +48,7 @@ GameOfLife *game; //! Object of game and can use for all methode
 
 //! http://math.hws.edu/graphicsbook/c3/s1.html#:~:text=The%20function%20glVertex2f%20specifies%20the,are%20passed%20to%20the%20function.
 //! A callback function
-/**!
+/**
  * glutDisplayFunc sets the display callback for the current window.
  * glutDisplayFunc sets the display callback for the current window. 
  * When GLUT determines that the normal plane for the window needs to be redisplayed, 
@@ -56,8 +57,9 @@ GameOfLife *game; //! Object of game and can use for all methode
  * (if no overlay display callback is registered) the layer in use is set to the normal plane. 
  * The display callback is called with no parameters.
  * The entire normal plane region should be redisplayed in response to the callback (this includes ancillary buffers if your program depends on their state).
- * @paramerter : int width
- * @paramterte int height
+ * @param int width
+ * @param int height
+ * @return void
  */
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,7 +72,7 @@ void display() {
 	for (GLint x = 0; x < game_width; ++x) {
 		for (GLint y = 0; y < game_height; ++y) {
             game->getElement(x, y)?glColor3f(BLACK):glColor3f(WHITE); // draw color for quads 
-            /**!
+            /*
 			 * Just print element to see 
 			// if(y == 1 or y == 99){
 			// 	std::cout << " 1: " << x*xSize+left << "," << y*ySize+bottom  << std::endl; 
@@ -100,7 +102,7 @@ void display() {
 	}
 	glEnd();
 
-	//! write line vertical
+	// write line vertical
 	glBegin(GL_LINES);
 		glColor3ub(180,170,168);
 		for (GLint x = 0; x < game_width; ++x) {
@@ -113,7 +115,7 @@ void display() {
 		}
 	glEnd();
 
-	//! write line horizon
+	// write line horizon
 	glBegin(GL_LINES);
 		glColor3ub(180,170,168);
 		for (GLint x = 0; x < game_width; ++x) {
@@ -130,10 +132,10 @@ void display() {
 	glutSwapBuffers();
 }
 
-//! A callback function
-/**!
+
+/**
  * glutReshapeFunc sets the reshape callback for the current window.
- * @paramerter : int width
+ * @param : int width
  * @paramterte int height
  * @return void
 */
@@ -153,11 +155,10 @@ void reshape(int w, int h) {
 	glutPostRedisplay();
 }
 
-//! A callback function
-/**!
+/**
  * glutTimerFunc callbackfunction and afer time
  * glutPostRedisplay marks the current window as needing to be redisplayed.
- * @paramerter : int value 
+ * @param int value 
  * @return void
 */
 void update(int value) {
@@ -169,10 +170,9 @@ void update(int value) {
 	glutTimerFunc(1000 / FPS, update, 0);
 }
 
-//! A callback function
-/**!
+/**
  * Event crt and scroll up or ow to see more detail of the element on the grid
- * @paramerter : int button, int state, int x, int y 
+ * @param : int button, int state, int x, int y 
  * @return void
 */
 void mouse(int button, int state, int x, int y)
@@ -212,8 +212,8 @@ void mouse(int button, int state, int x, int y)
         //printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
     }
 }
-//! A function Getconfig
-/**!
+
+/**
 	* get config file from txt file
 	* instruction from: https://www.walletfox.com/course/parseconfigfile.php
 	* stoi() convert string to int
@@ -252,8 +252,9 @@ void getConfigFile(){
         std::cerr << "Couldn't open config file for reading.\n";
     }
 }
-//! A main function only for openMP
-/**!
+
+/**
+ * A main function only for openMP
  * work follow: getconfig
  * init object
  * show gird 

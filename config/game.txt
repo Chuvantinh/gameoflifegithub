@@ -12,7 +12,7 @@ bottom = 0.0
 top = 1.0
 
 /* game's grid dimensions (for best viewing, they should be around 1/3 of the windows' dimensions) */
-gameWidth = 300
-gameHeight = 300
+gameWidth = 100
+gameHeight = 100
 /* OMP Thread*/
 OMP_NUM_THREADS=16

@@ -1,0 +1,11 @@
+digraph "displayTimer"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="displayTimer",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="glutPostRedisplay containts in this function"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="displayTimer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$backup_2gol_8cpp.html#afaf0a2a3b35cf3337a526a9a4d80c2c8",tooltip="A init function ."];
+}

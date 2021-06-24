@@ -1,0 +1,13 @@
+digraph "golMapGenerate"
+{
+ // INTERACTIVE_SVG=YES
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="golMapGenerate",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="golCellNext",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$backup_2gol_8cpp.html#aeeaa2ac3bbd8dae912309564112bbde1",tooltip=" "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="golCellGet",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$backup_2gol_8cpp.html#af1f703b797eb9b6c581deecff0e88cf9",tooltip=" "];
+}
