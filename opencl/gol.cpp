@@ -123,7 +123,8 @@ void golMapRandFill();
 int main(int argc, char *argv[])
 {
     initGL(argc, argv);
-
+    /* Phase 1 variables */
+    cl_int error;
     elements_size[0] = gol_map_width; //cell slots
     elements_size[1] = gol_map_height; //cell slots
     local_work_size[0] = 32;
@@ -145,9 +146,13 @@ int main(int argc, char *argv[])
     golMapRandFill();
     /**! end init gol_map */
 
+/**** Phase 1: Find platform and device (will OpenCL work at all?) *****/
     err = clGetPlatformIDs(1, &platform, NULL);
     die(err, "clGetPlatformIds");
-
+    if (error != CL_SUCCESS)
+	{
+		fprintf(stderr,"Couldn't get platform ids\n");
+	}
     /*
     err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
     die(err, "clGetDeviceIDs");
@@ -157,7 +162,7 @@ int main(int argc, char *argv[])
     context = clCreateContext(0, 1, &device, NULL, NULL, &err);
     die(err, "clCreateContext");
     */
-
+/**** Phase 2: Create the context and all of its associates *****/
     properties[0] = CL_GL_CONTEXT_KHR;  properties[1] = (cl_context_properties)glXGetCurrentContext();
     properties[2] = CL_GLX_DISPLAY_KHR; properties[3] = (cl_context_properties)glXGetCurrentDisplay();
     properties[4] = CL_CONTEXT_PLATFORM;  properties[5] = (cl_context_properties)platform;
@@ -169,8 +174,6 @@ int main(int argc, char *argv[])
 
     context =  clCreateContext(properties, 1, &device, NULL, NULL, &err);
     die(err, "clCreateContext");
-
-    //printf("dev=%lu, ctx=%lu\n", device, context);
 
     command_quque = clCreateCommandQueue(context, device, 0, &err);
     die(err, "clCreateCommandQueue");
@@ -578,7 +581,7 @@ void golMapRandFill()
     //{
         srand(seed);
         //seed = omp_get_thread_num();
-        //#pragma omp for collapse(2)
+        // #pragma omp parallel for collapse(2)
         for(int j=0; j<gol_map_width; ++j)
         {
             for(int i=0; i<gol_map_height; ++i)

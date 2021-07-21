@@ -47,6 +47,12 @@ public:
     */
 	~GameOfLife();
 
+    /*!
+      return grid 
+    */
+    bool **getGrid(){
+      return grid;
+    }
     //! A function variable
     /*!
       The element of grid will be initialized 

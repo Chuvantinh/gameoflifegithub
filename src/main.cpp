@@ -162,12 +162,12 @@ void reshape(int w, int h) {
  * @return void
 */
 void update(int value) {
-	//count = count + 1;
-	//std::cout << " vong lap: " << count <<std::endl; 
+	count = count + 1;
+	std::cout << " intertor : " << count <<std::endl; 
 	game->iterate();
 
 	glutPostRedisplay();
-	glutTimerFunc(1000 / FPS, update, 0);
+	glutTimerFunc(2000, update, 0);
 }
 
 /**
@@ -269,19 +269,24 @@ int main(int argc, char **argv) {
 
 	// game->printGrid();
   	glutInit(&argc, argv);
-
      
 	glutInitWindowSize(window_width, window_height);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Game of Life with OpenMP");
 	glClearColor(1, 1, 1, 1);
 
-	 glutMouseFunc(mouse);
+	glutMouseFunc(mouse);
 	 
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 
-	update(0);
+	game->iterate();
+
+	glutPostRedisplay();
+	glutPostRedisplay();
+	// glutTimerFunc(2000, update, 0);
+
+	// update(0); // ko can cap nhat gui
 	glutMainLoop();
 		
   	return 0;

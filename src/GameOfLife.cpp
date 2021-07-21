@@ -9,7 +9,7 @@
 GameOfLife::GameOfLife(const int w, const int h) : width(w), height(h)
 {
 	grid = new bool *[width];
-	tempGrid = new bool *[width];
+	tempGrid = new bool *[width * width];
 
 	for (size_t i = 0; i < width; ++i)
 	{
@@ -88,57 +88,81 @@ void GameOfLife::iterate()
 	// printf("nProcessors: %d\n",nProcessors);
 // schedule(static) ordered
 // #pragma omp for collapse(2)
-omp_set_nested(true); //Enables nesting.
-#pragma omp parallel
+
+int num_interaion = 100;
+while (num_interaion > 0){
+	num_interaion--;
+	printf("num_interaion: %d\n",num_interaion);
+// int neighbors = 0;
+//#pragma omp parallel for shared(grid, tempGrid)
+// for run 2 loops: https://stackoverflow.com/questions/13357065/how-does-openmp-handle-nested-loops?rq=1
+//#pragma omp parallel default(none) shared(grid, tempGrid) private ( i, j, neighbors) reduction (+:num_interaion)
+//{
+// #pragma omp parallel for collapse(2)
+//#pragma omp parallel for shared(i, j) reduction(+: neighbors)
+// OpenMP 4.5 because of #define _OPENMP 201511
+int i; 
+#pragma omp parallel shared(grid) private(tempGrid)
 {
-	#pragma omp for collapse(2)
-	for (size_t i = 0; i < width; ++i)
+	#pragma omp for
+	for ( i = 0; i < width; ++i)
 	{
-		for (size_t j = 0; j < height; ++j)
+		#pragma omp parallel shared(i, width)
 		{
-			// Edges
-			if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
-			{
-				tempGrid[i][j] = grid[i][j];
-			}
-			else
-			{
-				int neighbors = countNeighbors(i, j);
-				if (grid[i][j] == true)
+			#pragma omp for
+			for ( int j = 0; j < height; ++j)
+				// Edges
+				if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
 				{
-					if (neighbors == 2 || neighbors == 3)
-					{
-						// element survives
-						tempGrid[i][j] = 1;
-					}
-					else
-					{
-						// element dies
-						tempGrid[i][j] = 0;
-					}
+					tempGrid[i][j] = grid[i][j];
 				}
 				else
-				{
-					if (neighbors == 3)
-					{
-						// element is born
-						tempGrid[i][j] = 1;
-					}
-					else
-					{
-						// element empty
-						tempGrid[i][j] = 0;
-					}
+				{		
+						int neighbors = countNeighbors(i, j);
+						
+						if (grid[i][j] == true)
+						{
+							if (neighbors == 2 || neighbors == 3)
+							{
+								// element survives
+								tempGrid[i][j] = 1;
+							}
+							else
+							{
+								// element dies
+								tempGrid[i][j] = 0;
+							}
+						}
+						else
+						{
+							if (neighbors == 3)
+							{
+								// element is born
+								tempGrid[i][j] = 1;
+							}
+							else
+							{
+								// element empty
+								tempGrid[i][j] = 0;
+							}
+						}
+
+					
 				}
-			}
 		}
+		
 	}
 }
-
 	bool **t = grid;
 	grid = tempGrid;
 	tempGrid = t;
+	
+}// while for
 
+	//neighbors = 0; // come back to 0
+//}
+	
+	
 	// // free temporary
 	// for (size_t i = 0; i < width; ++i)
 	// {
