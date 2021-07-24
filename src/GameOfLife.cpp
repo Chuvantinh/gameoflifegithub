@@ -101,36 +101,53 @@ while (num_interaion > 0){
 // #pragma omp parallel for collapse(2)
 //#pragma omp parallel for shared(i, j) reduction(+: neighbors)
 // OpenMP 4.5 because of #define _OPENMP 201511
+//omp_lock_t writelock;
+//omp_init_lock(&writelock);
+
 int i; 
-#pragma omp parallel shared(grid) private(tempGrid)
-{
-	#pragma omp for
+#pragma omp parallel for default(shared)
 	for ( i = 0; i < width; ++i)
 	{
-		#pragma omp parallel shared(i, width)
-		{
-			#pragma omp for
+		#pragma omp parallel for shared(i, width)
 			for ( int j = 0; j < height; ++j)
+			{
 				// Edges
 				if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
-				{
+				{	
+					//omp_set_lock(&writelock);
+					//#pragma omp atomic write
 					tempGrid[i][j] = grid[i][j];
+					//omp_unset_lock(&writelock);
 				}
 				else
 				{		
+					//omp_set_lock(&writelock);
+					//#pragma opm atomic read
+					bool element =  grid[i][j];
+					//omp_unset_lock(&writelock);
+
+					//omp_set_lock(&writelock);
+					//	#pragma opm atomic read
 						int neighbors = countNeighbors(i, j);
-						
-						if (grid[i][j] == true)
+					//omp_unset_lock(&writelock);
+
+						if (element == true)
 						{
 							if (neighbors == 2 || neighbors == 3)
 							{
 								// element survives
+								//omp_set_lock(&writelock);
+								//#pragma omp atomic write
 								tempGrid[i][j] = 1;
+								//omp_unset_lock(&writelock);
 							}
 							else
 							{
 								// element dies
+								//omp_set_lock(&writelock);
+								//#pragma omp atomic write
 								tempGrid[i][j] = 0;
+								//omp_unset_lock(&writelock);
 							}
 						}
 						else
@@ -138,25 +155,29 @@ int i;
 							if (neighbors == 3)
 							{
 								// element is born
+								//omp_set_lock(&writelock);
+								//#pragma omp atomic write
 								tempGrid[i][j] = 1;
+								//omp_unset_lock(&writelock);
 							}
 							else
 							{
 								// element empty
+								//#pragma omp atomic write
 								tempGrid[i][j] = 0;
+								//omp_unset_lock(&writelock);
 							}
 						}
 
 					
 				}
-		}
-		
+			}
 	}
-}
+
 	bool **t = grid;
 	grid = tempGrid;
 	tempGrid = t;
-	
+	//omp_destroy_lock(&writelock);
 }// while for
 
 	//neighbors = 0; // come back to 0

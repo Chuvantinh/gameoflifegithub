@@ -37,3 +37,6 @@ for (int i = 0; i < n; i++)
     // using a, b, c
 }
 a, b, c and n are shared variables.
+
+1. lock and unlock
+2. ATOMIC
