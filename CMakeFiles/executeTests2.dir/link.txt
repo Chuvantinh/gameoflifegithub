@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/executeTests2.dir/opencl/gol-test.cpp.o  -o executeTests2  -Wl,-Bstatic -lgtest -Wl,-Bdynamic -lpthread 

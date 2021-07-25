@@ -15,4 +15,5 @@ top = 1.0
 gameWidth = 100
 gameHeight = 100
 /* OMP Thread*/
-OMP_NUM_THREADS=16
+OMP_NUM_THREADS=4
+parallel=1

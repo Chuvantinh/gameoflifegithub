@@ -3,8 +3,6 @@
   It contains the grid variable for storing the matrix of the element
   However, It has some the 
 */
-#pragma once
-
 #include <cstdlib>
 #include <ctime>
 
@@ -63,8 +61,13 @@ public:
     /*!
       The iterate function for redisplay grid, call back function will be called 
     */
-	void iterate();
+	void iterate(int OMP_NUM_THREADS);
 
+  //! A function variable
+    /*!
+      The iterate function without parallel
+    */
+  void iterate_noparallel();
     //! A function variable
     /*!
       Get element of grid at the codinator x and y

@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/adminpc/Dokumente/projects/game-of-life/opencl/gol-test.cpp
+gol.cpp
+/home/adminpc/Dokumente/projects/game-of-life/opencl/gol.cpp
+gtest/gtest.h
+-
+
+/home/adminpc/Dokumente/projects/game-of-life/opencl/gol.cpp
+iostream
+-
+fstream
+-
+stdio.h
+-
+string.h
+-
+math.h
+-
+time.h
+-
+omp.h
+-
+GL/glew.h
+-
+CL/opencl.h
+-
+GL/freeglut.h
+-
+GL/glx.h
+-
+

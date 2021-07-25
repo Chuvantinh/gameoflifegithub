@@ -22,8 +22,8 @@ doxygen -g dconfig create file config
 doxygen dconfig run in the project
 
 ## openmp attention
-A variable in an OpenMP parallel region can be either shared or private. 
-If a variable is SHARED, then there exists one instance of this variable which is shared among all threads. 
+A variable in an OpenMP parallel region can be either shared or private.
+If a variable is SHARED, then there exists one instance of this variable which is shared among all threads.
 If a variable is PRIVATE, then each thread in a team of threads has its own local copy of the private variable.
 
 Default (shared)
@@ -40,3 +40,12 @@ a, b, c and n are shared variables.
 
 1. lock and unlock
 2. ATOMIC
+
+mp:
+	gcc src/main.cpp src/GameOfLife.cpp -g -o src/game -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
+dmp:
+	valgrind --tool=helgrind src/game
+cl:
+	gcc opencl/gol.cpp -o opencl/gol -g -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
+dcl:
+	valgrind --tool=helgrind ./opencl/gol

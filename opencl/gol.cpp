@@ -19,7 +19,10 @@
 #include <GL/freeglut.h>
 #include <GL/glx.h>
 
-int sample_rate = 100000;
+#include <chrono> // for measure time
+
+
+int sample_rate = 1000;
 
 /* gl variables */
 GLfloat angle = 0.0f;
@@ -39,7 +42,6 @@ clock_t wall_clock = 0;
 
 GLuint frame_buffer_name = 0;
 GLuint rendered_texture, rendered_texture_out; //! binding rendered_texture to image in opencl , for the display 
-
 /* gl functions*/
 //! Init function
 void initGL(int argc, char *argv[]);
@@ -147,7 +149,7 @@ int main(int argc, char *argv[])
     /**! end init gol_map */
 
 /**** Phase 1: Find platform and device (will OpenCL work at all?) *****/
-    err = clGetPlatformIDs(1, &platform, NULL);
+    err = clGetPlatformIDs(2, &platform, NULL);
     die(err, "clGetPlatformIds");
     if (error != CL_SUCCESS)
 	{
@@ -238,9 +240,9 @@ int main(int argc, char *argv[])
     //     }
         
     // }
-    
-    startGL();
 
+    startGL();
+    
     /* output result */
     clean();
     return 0;
@@ -397,12 +399,13 @@ void generationTimer(int value)
 
     gol_generation++;
 
+
     if(gol_generation % sample_rate == 0){
         clock_t now = clock();
-        double fps = (double)sample_rate / ( (now - wall_clock) / CLOCKS_PER_SEC );
+        double fps =( (now - wall_clock) / CLOCKS_PER_SEC );
         printf("generation : %lli\n", gol_generation);
-        printf("fps = %lf\n", fps);
-        wall_clock = now;
+        printf("duration msc = %lf\n", fps);
+        // wall_clock = now;
     }
 
     glutTimerFunc(0, generationTimer, 0);

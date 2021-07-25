@@ -5,9 +5,12 @@
     document at https://google.github.io/googletest/
 */
 
-#include "GameOfLife.h"
+//#include "GameOfLife.h"
 #include "GameOfLife.cpp"
 #include <gtest/gtest.h>
+
+// #include "../opencl/gol.cpp"
+
 
 //! A function variable
 /*!
@@ -51,6 +54,12 @@ TEST(GetStatusElement, NoNeighbours)
     bool element = game->getElement(1,1);
     ASSERT_EQ(true, element);
     // check lengt of array grid
+}
+
+// TEST OPENCL
+TEST(TESTOPENCL, CountNeighBoursTest_CountNear_Test)
+{
+   //die(CL_SUCCESS, "Test");
 }
 
 //! A function variable

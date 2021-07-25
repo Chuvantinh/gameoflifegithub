@@ -35,7 +35,7 @@ GameOfLife::~GameOfLife()
 	delete[] tempGrid;
 }
 //! A function variable
-    /*!
+/*!
       The element of grid will be initialized 
 	  default probality = 0.1
     */
@@ -60,6 +60,62 @@ void GameOfLife::randomInit(const double probability)
 	}
 	// printGrid();
 }
+
+void GameOfLife::iterate_noparallel()
+{
+	int num_interaion = 1000;
+	for (int v = 0; v < num_interaion; v++)
+	{
+		printf("no parallel number interator: %d\n", v);
+
+		int i;
+
+		for (i = 0; i < width; ++i)
+		{
+			for (int j = 0; j < height; ++j)
+			{
+				// Edges
+				if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
+				{
+					tempGrid[i][j] = grid[i][j];
+				}
+				else
+				{
+					bool element = grid[i][j];
+					int neighbors = countNeighbors(i, j);
+
+					if (element == true)
+					{
+						if (neighbors == 2 || neighbors == 3)
+						{
+							tempGrid[i][j] = 1;
+						}
+						else
+						{
+							tempGrid[i][j] = 0;
+						}
+					}
+					else
+					{
+						if (neighbors == 3)
+						{
+							tempGrid[i][j] = 1;
+						}
+						else
+						{
+							tempGrid[i][j] = 0;
+						}
+					}
+				}
+			}
+		}
+
+		bool **t = grid;
+		grid = tempGrid;
+		tempGrid = t;
+	}
+}
+
 //! Interator function
 /*! This function runs 2 for loop to represent the grid by the caculating of neighbors
  *  and redisplay this grid by the function glutredisplay
@@ -71,7 +127,7 @@ void GameOfLife::randomInit(const double probability)
  * 
  * https://www.ibm.com/docs/en/xl-c-aix/13.1.2?topic=processing-pragma-omp-taskwait
  * */
-void GameOfLife::iterate()
+void GameOfLife::iterate(int OMP_NUM_THREADS)
 {
 	// std::cout << "w in iterate " << width ;
 
@@ -86,50 +142,54 @@ void GameOfLife::iterate()
 	// int nProcessors = omp_get_max_threads();
 	// std::cout << "nProcessors. " << nProcessors ;
 	// printf("nProcessors: %d\n",nProcessors);
-// schedule(static) ordered
-// #pragma omp for collapse(2)
+	// schedule(static) ordered
+	// #pragma omp for collapse(2)
+	printf("OMP_NUM_THREADS: %d\n", OMP_NUM_THREADS);
+	//omp_set_num_threads(OMP_NUM_THREADS);
+	int num_interaion = 1000;
 
-int num_interaion = 100;
-while (num_interaion > 0){
-	num_interaion--;
-	printf("num_interaion: %d\n",num_interaion);
-// int neighbors = 0;
-//#pragma omp parallel for shared(grid, tempGrid)
-// for run 2 loops: https://stackoverflow.com/questions/13357065/how-does-openmp-handle-nested-loops?rq=1
-//#pragma omp parallel default(none) shared(grid, tempGrid) private ( i, j, neighbors) reduction (+:num_interaion)
-//{
-// #pragma omp parallel for collapse(2)
-//#pragma omp parallel for shared(i, j) reduction(+: neighbors)
-// OpenMP 4.5 because of #define _OPENMP 201511
-//omp_lock_t writelock;
-//omp_init_lock(&writelock);
-
-int i; 
-#pragma omp parallel for default(shared)
-	for ( i = 0; i < width; ++i)
+	for (int v = 0; v < num_interaion; v++)
 	{
-		#pragma omp parallel for shared(i, width)
-			for ( int j = 0; j < height; ++j)
-			{
-				// Edges
-				if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
-				{	
-					//omp_set_lock(&writelock);
-					//#pragma omp atomic write
-					tempGrid[i][j] = grid[i][j];
-					//omp_unset_lock(&writelock);
-				}
-				else
-				{		
-					//omp_set_lock(&writelock);
-					//#pragma opm atomic read
-					bool element =  grid[i][j];
-					//omp_unset_lock(&writelock);
+		printf("number interator: %d\n", v);
+		// int neighbors = 0;
+		//#pragma omp parallel for shared(grid, tempGrid)
+		// for run 2 loops: https://stackoverflow.com/questions/13357065/how-does-openmp-handle-nested-loops?rq=1
+		//#pragma omp parallel default(none) shared(grid, tempGrid) private ( i, j, neighbors) reduction (+:num_interaion)
+		//{
+		// #pragma omp parallel for collapse(2)
+		//#pragma omp parallel for shared(i, j) reduction(+: neighbors)
+		// OpenMP 4.5 because of #define _OPENMP 201511
+		//omp_lock_t writelock;
+		//omp_init_lock(&writelock);
 
-					//omp_set_lock(&writelock);
-					//	#pragma opm atomic read
+		int i;
+#pragma omp parallel for default(shared)
+		for (i = 0; i < width; ++i)
+		{
+#pragma omp parallel for shared(i, width)
+			for (int j = 0; j < height; ++j)
+			{
+//#pragma omp criticaL
+//				{
+					// Edges
+					if (i == 0 || i == (width - 1) || j == 0 || j == (height - 1))
+					{
+						//omp_set_lock(&writelock);
+						//#pragma omp atomic write
+						tempGrid[i][j] = grid[i][j];
+						//omp_unset_lock(&writelock);
+					}
+					else
+					{
+						//omp_set_lock(&writelock);
+						//#pragma opm atomic read
+						bool element = grid[i][j];
+						//omp_unset_lock(&writelock);
+
+						//omp_set_lock(&writelock);
+						//	#pragma opm atomic read
 						int neighbors = countNeighbors(i, j);
-					//omp_unset_lock(&writelock);
+						//omp_unset_lock(&writelock);
 
 						if (element == true)
 						{
@@ -168,22 +228,20 @@ int i;
 								//omp_unset_lock(&writelock);
 							}
 						}
-
-					
-				}
+					}
+				//}
 			}
-	}
+		}
 
-	bool **t = grid;
-	grid = tempGrid;
-	tempGrid = t;
-	//omp_destroy_lock(&writelock);
-}// while for
+		bool **t = grid;
+		grid = tempGrid;
+		tempGrid = t;
+		//omp_destroy_lock(&writelock);
+	} // while for
 
 	//neighbors = 0; // come back to 0
-//}
-	
-	
+	//}
+
 	// // free temporary
 	// for (size_t i = 0; i < width; ++i)
 	// {
@@ -192,7 +250,7 @@ int i;
 }
 
 //! A function variable
-    /*!
+/*!
       Count the number of Neighbors without itself
 	  not count the edges of grid , see above code in the funtion iterator
     */
@@ -214,7 +272,7 @@ int GameOfLife::countNeighbors(int x, int y)
 }
 
 //! A function variable
-    /*!
+/*!
       get Element at position
 	  return value of element
     */
@@ -224,7 +282,7 @@ bool GameOfLife::getElement(const int x, const int y)
 }
 
 //! A function variable
-    /*!
+/*!
       set Element at position with value
 	  return true
     */
@@ -235,7 +293,7 @@ bool GameOfLife::setElement(int x, int y, int value)
 }
 
 ///! A function variable
-    /*!
+/*!
       just print value and position of function
     */
 void GameOfLife::printGrid()

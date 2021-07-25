@@ -20,6 +20,8 @@
 
 #include <iostream>
 
+#include <chrono> // for measure time
+
 //! A define variable.
 /*!
     Define colors of the game
@@ -43,6 +45,7 @@ GLint game_height = 100;
 int count = 0;
 double zoom = 1.0;
 int OMP_NUM_THREADS;//! NUMBER OF THREADS FOR OPENMP
+int parallel; 
 
 GameOfLife *game; //! Object of game and can use for all methode
 
@@ -164,7 +167,7 @@ void reshape(int w, int h) {
 void update(int value) {
 	count = count + 1;
 	std::cout << " intertor : " << count <<std::endl; 
-	game->iterate();
+	game->iterate(OMP_NUM_THREADS);
 
 	glutPostRedisplay();
 	glutTimerFunc(2000, update, 0);
@@ -245,6 +248,7 @@ void getConfigFile(){
 			if(name == "gameWidth"){game_width = stoi(value);}
 			if(name == "gameHeight"){ game_height = stoi(value);}
 			if(name == "OMP_NUM_THREADS"){ OMP_NUM_THREADS = stoi(value);}
+			if(name == "parallel"){ parallel = stoi(value);}
         }
         
     }
@@ -280,7 +284,28 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 
-	game->iterate();
+	using std::chrono::high_resolution_clock;
+    using std::chrono::duration_cast;
+    using std::chrono::duration;
+    using std::chrono::milliseconds;
+	
+	auto t1 = high_resolution_clock::now();
+	if(parallel == 1){
+		game->iterate(OMP_NUM_THREADS);
+	}else{
+		game->iterate_noparallel();
+	}
+	
+	auto t2 = high_resolution_clock::now();
+
+	/* Getting number of milliseconds as an integer. */
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+
+    /* Getting number of milliseconds as a double. */
+    duration<double, std::milli> ms_double = t2 - t1;
+
+    std::cout << ms_int.count() << "ms\n";
+    std::cout << ms_double.count() << "ms";
 
 	glutPostRedisplay();
 	glutPostRedisplay();

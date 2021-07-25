@@ -184,5 +184,3 @@ cl:
 	gcc opencl/gol.cpp -o opencl/gol -g -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
 dcl:
 	valgrind --tool=helgrind ./opencl/gol
-ks:
-	gcc src/klausur.c -o src/klausurRun

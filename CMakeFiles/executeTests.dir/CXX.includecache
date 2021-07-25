@@ -23,8 +23,6 @@ ctime
 -
 
 /home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife_Test.cpp
-GameOfLife.h
-/home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.h
 GameOfLife.cpp
 /home/adminpc/Dokumente/projects/game-of-life/src/GameOfLife.cpp
 gtest/gtest.h
