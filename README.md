@@ -41,11 +41,16 @@ a, b, c and n are shared variables.
 1. lock and unlock
 2. ATOMIC
 
+how to run
+
 mp:
 	gcc src/main.cpp src/GameOfLife.cpp -g -o src/game -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
+
 dmp:
 	valgrind --tool=helgrind src/game
+
 cl:
 	gcc opencl/gol.cpp -o opencl/gol -g -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
+
 dcl:
 	valgrind --tool=helgrind ./opencl/gol
