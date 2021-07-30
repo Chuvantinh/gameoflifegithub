@@ -7,9 +7,7 @@
 
 ## Configuration File
 
-Some game variables can be changed using a configuration file like `game.config` (configuration file reading is powered by Richard J. Wagner's [ConfigFile](http://ai.stanford.edu/~gal/Code/FindMotifs/ConfigFile.h)). The configuration file is passed as an argument to the executable:
-
-`./game game.config`
+Some game variables can be changed using a configuration file like `config game.txt` (configuration file reading is powered ). The configuration file is passed as an argument to the executable:
 
 The example configuration lists all the possible configurations each accompanied by a small explanation.
 
@@ -41,8 +39,11 @@ a, b, c and n are shared variables.
 1. lock and unlock
 2. ATOMIC
 
-how to run
-
+how to run make file 
+make mp for openmp
+make dmp for test with vargind
+make cl for run opencl
+make dcl for opencl's debug
 mp:
 	gcc src/main.cpp src/GameOfLife.cpp -g -o src/game -lOpenCL -lglut -lGLEW -lGLU -lGL -fopenmp -lstdc++ -lm
 

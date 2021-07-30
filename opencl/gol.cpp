@@ -76,6 +76,7 @@ cl_context_properties properties[7];
 cl_context context;
 cl_command_queue command_quque;
 cl_platform_id platform;
+cl_uint num_platforms;
 cl_device_id device;
 cl_program program;
 cl_kernel kernel;
@@ -149,17 +150,18 @@ int main(int argc, char *argv[])
     /**! end init gol_map */
 
 /**** Phase 1: Find platform and device (will OpenCL work at all?) *****/
-    err = clGetPlatformIDs(2, &platform, NULL);
+    err = clGetPlatformIDs(1, &platform, &num_platforms);
     die(err, "clGetPlatformIds");
     if (error != CL_SUCCESS)
 	{
 		fprintf(stderr,"Couldn't get platform ids\n");
 	}
-    /*
+
+    std::cout << num_platforms; // unforunatly only gpu available 
+    
     err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL);
     die(err, "clGetDeviceIDs");
-    */
-
+    
     /*
     context = clCreateContext(0, 1, &device, NULL, NULL, &err);
     die(err, "clCreateContext");
@@ -398,7 +400,6 @@ void generationTimer(int value)
     // std::cout << &dev_gol_image;
 
     gol_generation++;
-
 
     if(gol_generation % sample_rate == 0){
         clock_t now = clock();
